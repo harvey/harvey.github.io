@@ -131,8 +131,21 @@
         /* Projects grid adjustments for chat */
         .projects-grid {
             display: grid;
-            gap: 15px;
-            margin-top: 15px;
+            grid-template-columns: repeat(2, 1fr); /* 2 columns by default */
+            gap: 20px;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr; /* Single column on mobile */
+                max-width: 100%;
+            }
+            
+            /* Optional: Reduce gap for mobile */
+            .projects-grid {
+                gap: 15px;
+            }
         }
 
         .projects-grid img {
