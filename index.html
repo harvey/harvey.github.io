@@ -31,6 +31,7 @@
             width: 100%;
             height: calc(100vh - 140px);
             overflow-y: auto;
+            scroll-behavior: smooth;
         }
 
         /* Message bubbles */
@@ -385,6 +386,171 @@
             }
         }
         
+        @media (max-width: 768px) {
+            .project-item {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: #1a1a1a;
+                padding: 10px;
+                border-radius: 8px;
+                margin-bottom: 6px; /* Reduced gap between items */
+                cursor: pointer;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                border: 1px solid #444; /* Adds a subtle outline */
+            }
+            .project-item:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+            }
+            .project-info {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                width: 100%;
+                color: #e0e0e0;
+            }
+            .project-name {
+                font-size: 1em;
+                font-weight: bold;
+                border-bottom: 1px solid #444; /* Underline for the title */
+                padding-bottom: 4px;
+                margin-bottom: 4px;
+            }
+            .project-stats {
+                font-size: 0.8em;
+                color: #ccc;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .text-info {
+                font-size: 0.75em;
+                color: #ccc;  /* Light grey text for stars and forks */
+                margin-right: 4px;
+                display: inline-block;
+            }
+            .badge-language {
+                background-color: #444; /* Fallback background color (will be overridden inline if available) */
+                border-radius: 5px;
+                padding: 2px 4px;
+                font-size: 0.75em;
+                color: #222; /* Darker text for contrast against bright backgrounds */
+                margin-right: 4px;
+                display: inline-block;
+            }
+        }
+
+        .text-info {
+            font-size: 0.75em;
+            color: #ccc; /* Light grey text for stars and forks */
+            margin-right: 4px;
+            display: inline-block;
+        }
+
+        .badge-language {
+            background-color: #444; /* Fallback background color */
+            border-radius: 5px;       /* Gives the span rounded corners */
+            padding: 2px 4px;
+            font-size: 0.75em;
+            color: #222;              /* Dark text for better contrast, even against bright backgrounds */
+            margin-right: 4px;
+            display: inline-block;
+        }
+
+        /* Styles for project items, applicable on all devices */
+        .project-item {
+            display: flex;
+            align-items: stretch; /* Ensure the child fills the container's height */
+            background: #1a1a1a;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid #444;
+        }
+        .project-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+        }
+
+        /* Main project info layout as a flex column */
+        .project-info {
+            display: flex;
+            flex-direction: column;
+            height: 100%; /* Make it fill the container's height */
+            color: #e0e0e0;
+        }
+
+        /* Project title styling */
+        .project-name {
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        /* Divider line for visual separation between title and description */
+        .project-divider {
+            height: 1px;
+            background-color: #444;
+            margin: 4px 0;
+        }
+
+        /* Project description styling */
+        .project-description {
+            font-size: 0.85em;
+            color: #ccc;
+            line-height: 1.2;
+        }
+
+        /* Stats container (stars, forks, language) acting as a footer */
+        .project-stats {
+            margin-top: auto; /* Push this container to the bottom of .project-info */
+            padding-top: 6px; /* Extra padding to separate from description text */
+            font-size: 0.8em;
+            color: #ccc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Plain text style for stars and forks */
+        .text-info {
+            font-size: 0.75em;
+            color: #ccc;
+            margin-right: 4px;
+            display: inline-block;
+        }
+
+        /* Badge styling for language info */
+        .badge-language {
+            background-color: #444; /* Fallback background (inline style overrides if provided) */
+            border-radius: 5px;
+            padding: 2px 4px;
+            font-size: 0.75em;
+            color: #222;
+            margin-right: 4px;
+            display: inline-block;
+        }
+
+        /* Further increased font sizes on desktop */
+        @media (min-width: 769px) {
+            .project-name {
+                font-size: 1.2em;
+            }
+            .project-description {
+                font-size: 1em;
+            }
+            .project-stats {
+                font-size: 0.9em;
+            }
+            .text-info {
+                font-size: 0.85em;
+            }
+            .badge-language {
+                font-size: 0.85em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -451,6 +617,19 @@
     </div>
 
     <script>
+        // Mapping of several popular languages to their GitHub colors.
+        const languageColors = {
+            "JavaScript": "#f1e05a",
+            "Python": "#3572A5",
+            "Java": "#b07219",
+            "Ruby": "#701516",
+            "CSS": "#563d7c",
+            "C++": "#f34b7d",
+            "HTML": "#e34c26",
+            "TypeScript": "#2b7489"
+            // You can add more languages as needed.
+        };
+
         async function showSection(section) {
             const container = document.getElementById('chatContainer');
             const typing = document.getElementById('typingIndicator');
@@ -478,9 +657,10 @@
                 deleteButton.addEventListener('click', () => {
                     // Add fade-out animation class on click
                     messageDiv.classList.add('fade-out');
-                    // Once the animation has ended, remove the message from DOM
+                    // Once the animation has ended, remove the message and adjust the scroll smoothly
                     messageDiv.addEventListener('animationend', () => {
                         messageDiv.remove();
+                        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
                     });
                 });
                 botMessage.appendChild(deleteButton);
@@ -519,13 +699,41 @@
         async function fetchGitHubRepos(username) {
             const response = await fetch(`https://api.github.com/users/${username}/repos`);
             const repos = await response.json();
+
+            // Sort repositories:
+            // - First, by total count of (stargazers_count + forks_count) in descending order.
+            // - If equal, sort alphabetically by repo name.
+            repos.sort((a, b) => {
+                const totalA = a.stargazers_count + a.forks_count;
+                const totalB = b.stargazers_count + b.forks_count;
+                return totalB - totalA || a.name.localeCompare(b.name);
+            });
             
             return repos.filter(r => !['harvey.github.io'].includes(r.name))
-                .map(repo => `
-                    <div class="project-item" data-repo="${repo.name}" data-owner="${username}">
-                        <img src="https://github-readme-stats.vercel.app/api/pin/?username=${username}&repo=${repo.name}&theme=dark" alt="${repo.name}">
-                    </div>
-                `).join('');
+                .map(repo => {
+                    const starsText = repo.stargazers_count > 0 
+                        ? `<span class="text-info">⭐ ${repo.stargazers_count}</span>` : "";
+                    const forksText = repo.forks_count > 0 
+                        ? `<span class="text-info">🍴 ${repo.forks_count}</span>` : "";
+                    const languageBadge = repo.language 
+                        ? `<span class="badge badge-language" style="background-color: ${languageColors[repo.language] || '#ccc'};">${repo.language}</span>` : "";
+                    const description = repo.description ? repo.description : "No description available";
+                    
+                    return `
+                        <div class="project-item" data-repo="${repo.name}" data-owner="${username}">
+                            <div class="project-info">
+                                <div class="project-name">${repo.name}</div>
+                                
+                                <div class="project-description">${description}</div>
+                                <div class="project-stats">
+                                    ${starsText}
+                                    ${forksText}
+                                    ${languageBadge}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
         }
 
         
