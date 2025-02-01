@@ -20,6 +20,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-y: hidden;
         }
 
         /* Chat container */
@@ -74,11 +75,17 @@
 
         /* Typing indicator */
         .typing {
-            display: none;
+            display: none; /* will be changed to block when in use */
             padding: 15px;
-            margin: 10px 0;
+            margin: 0;
+            position: fixed;
+            bottom: 80px; /* adjust this value if your quick replies height changes */
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 100; /* ensure it stays above other elements */
         }
-
+        
         .typing span {
             height: 10px;
             width: 10px;
@@ -86,7 +93,23 @@
             border-radius: 50%;
             display: inline-block;
             margin-right: 5px;
-            animation: typing 1.4s infinite ease-in-out;
+            animation: typing 0.75s infinite ease-in-out;
+        }
+        
+        /* Stagger animation delays for a livelier look */
+        .typing span:nth-child(1) {
+            animation-delay: 0s;
+        }
+        .typing span:nth-child(2) {
+            animation-delay: 0.13s;
+        }
+        .typing span:nth-child(3) {
+            animation-delay: 0.22s;
+        }
+        
+        @keyframes typing {
+            0%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
         }
 
         /* Navigation styled as quick replies */
@@ -127,11 +150,6 @@
             }
         }
 
-        @keyframes typing {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
         /* Projects grid adjustments for chat */
         .projects-grid {
             display: grid;
@@ -160,7 +178,7 @@
         /* Mobile adjustments */
         @media (max-width: 768px) {
             .chat-container {
-                margin: 20px auto 100px;
+                margin: 20px auto 60px; /* Reduced bottom margin from 100px to 60px */
                 padding: 10px;
             }
 
@@ -168,7 +186,10 @@
                 max-width: 90%;
             }
 
+            /* Quick replies remain fixed near the bottom */
             .quick-replies {
+                top: auto;
+                bottom: 1%;
                 flex-wrap: wrap;
             }
         }
@@ -258,6 +279,7 @@
 
         .markdown-content img {
             max-width: 100%;
+            max-height: 30vh; /* Ensures images do not exceed 50% of the viewport height */
             height: auto;
             display: block;
             margin: 15px auto;
@@ -320,6 +342,47 @@
         body {
             scrollbar-width: thin;
             scrollbar-color: #444 #1a1a1a;
+        }
+
+        /* Delete button inside each chat message */
+        .delete-chat {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            color: #aaa;
+            user-select: none; /* prevents accidental selection */
+            z-index: 10;
+        }
+
+        .delete-chat:hover {
+            color: #fff;
+        }
+        
+        @keyframes messageDisappear {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+
+        .message.fade-out {
+            animation: messageDisappear 0.3s ease-out forwards;
+        }
+
+        /* Desktop adjustments */
+        @media (min-width: 769px) {
+            .chat-container {
+                max-width: 1200px; /* Increase maximum width for desktop */
+                margin: 80px auto 80px; /* Slightly larger top margin and bottom margin */
+                padding: 30px; /* Increase overall padding */
+                height: calc(100vh - 80px); /* Adjust height to give more room */
+            }
         }
         
     </style>
@@ -392,26 +455,44 @@
             const container = document.getElementById('chatContainer');
             const typing = document.getElementById('typingIndicator');
             
-            // Show typing indicator
-            //typing.style.display = 'block';
+            // Show typing indicator immediately
+            typing.style.display = 'block';
             
-            // Simulate typing delay
-            await new Promise(resolve => setTimeout(resolve, 1));
+            // Create a message container and hide it initially until images load
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.style.display = 'none'; // Hide the message initially
             
-            // Hide typing indicator
-            typing.style.display = 'none';
-            
-            // Clone and show the template
+            // Clone the template for the requested section.
             const template = document.getElementById(`${section}Template`);
             const clone = template.content.cloneNode(true);
             
-            // If projects, load GitHub repos
-            if(section === 'projects') {
+            // Locate the bot-message element inside the clone and add the delete button inside it
+            const botMessage = clone.querySelector('.bot-message');
+            if (botMessage) {
+                // Set relative positioning so delete button positions correctly
+                botMessage.style.position = 'relative';
+                const deleteButton = document.createElement('span');
+                deleteButton.className = 'delete-chat';
+                deleteButton.textContent = '×'; // cross icon
+                deleteButton.addEventListener('click', () => {
+                    // Add fade-out animation class on click
+                    messageDiv.classList.add('fade-out');
+                    // Once the animation has ended, remove the message from DOM
+                    messageDiv.addEventListener('animationend', () => {
+                        messageDiv.remove();
+                    });
+                });
+                botMessage.appendChild(deleteButton);
+            }
+            
+            // Process projects section if needed
+            if (section === 'projects') {
                 const grid = clone.querySelector('.projects-grid');
                 const repos = await fetchGitHubRepos('harvey');
                 grid.innerHTML = repos;
                 
-                // Add click handlers after DOM update
+                // Set up click handlers for each project item after DOM update
                 grid.querySelectorAll('.project-item').forEach(item => {
                     item.addEventListener('click', handleProjectClick(
                         item.dataset.repo,
@@ -420,17 +501,18 @@
                 });
             }
             
-            // Create message container
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message';
+            // Append the clone to the message container and to the chat container
             messageDiv.appendChild(clone);
-            
             container.appendChild(messageDiv);
             
-            // Wait for images to load
+            // Wait for all images in the message to load before revealing it
             await waitForImages(messageDiv);
             
-            // Now scroll to bottom
+            // Hide the typing indicator and show the loaded message
+            typing.style.display = 'none';
+            messageDiv.style.display = 'block';
+            
+            // Scroll to the bottom of the chat container.
             container.scrollTop = container.scrollHeight;
         }
 
@@ -452,49 +534,69 @@
                 const typing = document.getElementById('typingIndicator');
                 const container = document.getElementById('chatContainer');
                 
+                // Show typing indicator immediately
                 typing.style.display = 'block';
                 try {
+                    // Fetch README content from GitHub
                     const readmeResponse = await fetch(
                         `https://api.github.com/repos/${owner}/${repoName}/readme`,
                         { headers: { 'Accept': 'application/vnd.github.v3.raw' } }
                     );
-                    
                     const readmeContent = await readmeResponse.text();
                     const repoUrl = `https://github.com/${owner}/${repoName}`;
                     
                     // Convert Markdown to HTML
                     const htmlContent = marked.parse(readmeContent);
                     
-                    typing.style.display = 'none';
-                    
+                    // Clone the readme template and set its content
                     const template = document.getElementById('readmeTemplate');
                     const clone = template.content.cloneNode(true);
-                    
                     clone.querySelector('.markdown-content').innerHTML = htmlContent;
                     clone.querySelector('.repo-link a').href = repoUrl;
                     
+                    // Create a message container, hide it initially
                     const messageDiv = document.createElement('div');
                     messageDiv.className = 'message';
+                    messageDiv.style.display = 'none'; // Hide until images load
+                    
+                    // Locate the bot-message element and add the delete button inside it
+                    const botMessage = clone.querySelector('.bot-message');
+                    if (botMessage) {
+                        botMessage.style.position = 'relative';
+                        const deleteButton = document.createElement('span');
+                        deleteButton.className = 'delete-chat';
+                        deleteButton.textContent = '×'; // cross icon
+                        deleteButton.addEventListener('click', () => {
+                            messageDiv.classList.add('fade-out');
+                            messageDiv.addEventListener('animationend', () => {
+                                messageDiv.remove();
+                            });
+                        });
+                        botMessage.appendChild(deleteButton);
+                    }
+                    
                     messageDiv.appendChild(clone);
                     container.appendChild(messageDiv);
-                    container.scrollTop = container.scrollHeight;
-
+                    
+                    // Wait until all images within the message have loaded
                     await waitForImages(messageDiv);
-            
-                    // Double-check scroll position after layout
+                    
+                    // Once images are loaded, hide the typing indicator and reveal the message
+                    typing.style.display = 'none';
+                    messageDiv.style.display = 'block';
+                    
+                    // Scroll to the bottom of the chat container
+                    container.scrollTop = container.scrollHeight;
+                    
+                    // Double-check scroll position in case layout changed
                     const scrollCheck = () => {
                         const prevHeight = container.scrollHeight;
                         container.scrollTop = container.scrollHeight;
-                        
-                        // If height changed, check again
                         if (container.scrollHeight !== prevHeight) {
                             requestAnimationFrame(scrollCheck);
                         }
                     };
-
-                    // Initial scroll and recursive check
                     requestAnimationFrame(scrollCheck);
-
                 } catch (error) {
                     typing.style.display = 'none';
                     const errorMessage = document.createElement('div');
