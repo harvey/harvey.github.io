@@ -92,7 +92,8 @@
         /* Navigation styled as quick replies */
         .quick-replies {
             position: fixed;
-            bottom: 0;
+            top: 1%;
+            border-radius: 15px;
             left: 0;
             right: 0;
             background: #111;
@@ -100,6 +101,9 @@
             display: flex;
             gap: 10px;
             border-top: 1px solid #222;
+            max-width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .quick-reply {
@@ -326,16 +330,17 @@
             <div class="message-header">
                 <img src="me.JPG" class="avatar" alt="Harvey Chandler">
                 <div class="bot-message">
-                    🖥️ Welcome! I'm Harvey Chandler.<br>
+                    🖥️ Hello! I'm Harvey Chandler.<br>
                     What would you like to see?
                 </div>
             </div>
         </div>
-        
+             
         <!-- Templates for different message types -->
         <template id="projectsTemplate">
             <div class="bot-message">
                 <h3>My Projects</h3>
+                <br>
                 <div class="projects-grid"></div>
             </div>
         </template>
@@ -364,7 +369,7 @@
             <div class="bot-message">
                 <h3>Contact</h3>
                 <p>📧 <a href="mailto:harveychandler235@gmail.com">harveychandler235@gmail.com</a><br>
-                💻 GitHub: <a href="https://github.com/harvey">Harvey</a><br>
+                💻 GitHub: <a href="https://github.com/harvey">harvey</a><br>
                 🔗 LinkedIn: <a href="https://www.linkedin.com/in/harveychandler">harveychandler</a></p>
             </div>
         </template>
@@ -388,10 +393,10 @@
             const typing = document.getElementById('typingIndicator');
             
             // Show typing indicator
-            typing.style.display = 'block';
+            //typing.style.display = 'block';
             
             // Simulate typing delay
-            await new Promise(resolve => setTimeout(resolve, 300));
+            await new Promise(resolve => setTimeout(resolve, 1));
             
             // Hide typing indicator
             typing.style.display = 'none';
@@ -471,7 +476,6 @@
                     const messageDiv = document.createElement('div');
                     messageDiv.className = 'message';
                     messageDiv.appendChild(clone);
-                    
                     container.appendChild(messageDiv);
                     container.scrollTop = container.scrollHeight;
 
