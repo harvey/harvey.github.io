@@ -506,7 +506,6 @@
         /* Stats container (stars, forks, language) acting as a footer */
         .project-stats {
             margin-top: auto; /* Push this container to the bottom of .project-info */
-            padding-top: 6px; /* Extra padding to separate from description text */
             font-size: 0.8em;
             color: #ccc;
             display: flex;
@@ -587,9 +586,11 @@
         <template id="aboutTemplate">
             <div class="bot-message">
                 <h3>About Me</h3>
-                <p>🎓 Full-time Computer Science student @ University of Kent<br>
-                💻 Aspiring Software Engineer<br><br>
-                <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=harvey&theme=dark" alt="Languages">
+                <p>
+                    🎓 Full-time Computer Science student @ University of Kent<br>
+                    💻 Aspiring Software Engineer<br><br>
+                    <!-- <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=harvey&theme=dark" alt="Languages"> -->
+                    <div id="languagesContent">Loading languages...</div>
                 </p>
             </div>
         </template>
@@ -694,46 +695,61 @@
             
             // Scroll to the bottom of the chat container.
             container.scrollTop = container.scrollHeight;
+
+            if (section === 'about') {
+                updateOverallLanguageBreakdown('harvey');
+            }
         }
 
-        async function fetchGitHubRepos(username) {
-            const response = await fetch(`https://api.github.com/users/${username}/repos`);
-            const repos = await response.json();
+        let temp = null;
 
-            // Sort repositories:
-            // - First, by total count of (stargazers_count + forks_count) in descending order.
-            // - If equal, sort alphabetically by repo name.
-            repos.sort((a, b) => {
-                const totalA = a.stargazers_count + a.forks_count;
-                const totalB = b.stargazers_count + b.forks_count;
-                return totalB - totalA || a.name.localeCompare(b.name);
-            });
-            
-            return repos.filter(r => !['harvey.github.io'].includes(r.name))
-                .map(repo => {
-                    const starsText = repo.stargazers_count > 0 
-                        ? `<span class="text-info">⭐ ${repo.stargazers_count}</span>` : "";
-                    const forksText = repo.forks_count > 0 
-                        ? `<span class="text-info">🍴 ${repo.forks_count}</span>` : "";
-                    const languageBadge = repo.language 
-                        ? `<span class="badge badge-language" style="background-color: ${languageColors[repo.language] || '#ccc'};">${repo.language}</span>` : "";
-                    const description = repo.description ? repo.description : "No description available";
-                    
-                    return `
-                        <div class="project-item" data-repo="${repo.name}" data-owner="${username}">
-                            <div class="project-info">
-                                <div class="project-name">${repo.name}</div>
-                                
-                                <div class="project-description">${description}</div>
-                                <div class="project-stats">
-                                    ${starsText}
-                                    ${forksText}
-                                    ${languageBadge}
+
+        async function fetchGitHubRepos(username) {
+            //console.log(temp);
+            if(temp) {
+                return temp;
+            }
+            else{
+                const response = await fetch(`https://api.github.com/users/${username}/repos`);
+                repos = await response.json();
+
+
+                // Sort repositories:
+                // - First, by total count of (stargazers_count + forks_count) in descending order.
+                // - If equal, sort alphabetically by repo name.
+                repos.sort((a, b) => {
+                    const totalA = a.stargazers_count + a.forks_count;
+                    const totalB = b.stargazers_count + b.forks_count;
+                    return totalB - totalA || a.name.localeCompare(b.name);
+                });
+                // Filter out unwanted repos (e.g., 'harvey.github.io')
+                temp = repos.filter(r => !['harvey.github.io'].includes(r.name))
+                    .map(repo => {
+                        const starsText = repo.stargazers_count > 0 
+                            ? `<span class="text-info">⭐ ${repo.stargazers_count}</span>` : "";
+                        const forksText = repo.forks_count > 0 
+                            ? `<span class="text-info">🍴 ${repo.forks_count}</span>` : "";
+                        const languageBadge = repo.language 
+                            ? `<span class="badge badge-language" style="background-color: ${languageColors[repo.language] || '#ccc'};">${repo.language}</span>` : "";
+                        const description = repo.description ? repo.description : "No description available";
+                        
+                        return `
+                            <div class="project-item" data-repo="${repo.name}" data-owner="${username}">
+                                <div class="project-info">
+                                    <div class="project-name">${repo.name}</div>
+                                    
+                                    <div class="project-description">${description}</div>
+                                    <div class="project-stats">
+                                        ${starsText}
+                                        ${forksText}
+                                        ${languageBadge}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    `;
-                }).join('');
+                        `;
+                    }).join('');
+                }
+            return temp;
         }
 
         
@@ -846,6 +862,283 @@
         });
     });
 }
+
+async function fetchMostUsedLanguages(username) {
+    const response = await fetch(`https://api.github.com/users/${username}/repos`);
+    const repos = await response.json();
+    const languageCounts = {};
+
+    // Count languages for each repository (ignoring excluded ones)
+    repos.filter(r => !['harvey.github.io'].includes(r.name)).forEach(repo => {
+        if (repo.language) {
+            languageCounts[repo.language] = (languageCounts[repo.language] || 0) + 1;
+        }
+    });
+
+    // Sort languages by count (descending) and then alphabetically if counts are equal.
+    const sortedLanguages = Object.keys(languageCounts).sort((a, b) => {
+        const diff = languageCounts[b] - languageCounts[a];
+        return diff !== 0 ? diff : a.localeCompare(b);
+    });
+
+    // Build a text-based HTML snippet listing languages and their counts.
+    return sortedLanguages
+        .map(lang => `<div>${lang}: ${languageCounts[lang]} repo${languageCounts[lang] > 1 ? 's' : ''}</div>`)
+        .join('');
+}
+
+// Computes each project's popularity percentage relative to the total popularity of all projects.
+async function fetchProjectPercentages(username) {
+    console.log(repos);
+    if(!repos) {
+        const response = await fetch(`https://api.github.com/users/${username}/repos`);
+        repos = await response.json();
+
+    }
+  
+  // Filter out unwanted repos (e.g., 'harvey.github.io')
+  const filteredRepos = repos.filter(r => !['harvey.github.io'].includes(r.name));
+
+  let totalPopularity = 0;
+  // Calculate each repo's popularity and the overall sum.
+  filteredRepos.forEach(repo => {
+    repo.popularity = repo.stargazers_count + repo.forks_count;
+    totalPopularity += repo.popularity;
+  });
+
+  // Build an array that includes each repo's name, its popularity, and its percentage.
+  const projectPercentages = filteredRepos.map(repo => {
+    const percentage = totalPopularity > 0 ? ((repo.popularity / totalPopularity) * 100).toFixed(1) : "0.0";
+    return { 
+      name: repo.name, 
+      popularity: repo.popularity, 
+      totalPopularity: totalPopularity, 
+      percentage: percentage 
+    };
+  });
+  
+  return projectPercentages;
+}
+
+// Computes the overall popularity percentage for each language based on repos' popularity.
+// In this case, popularity is again measured as stars + forks.
+async function fetchLanguagePopularityPercentages(username) {
+  const response = await fetch(`https://api.github.com/users/${username}/repos`);
+  const repos = await response.json();
+  // Only consider repositories with a defined language, and filter out unwanted ones.
+  const filteredRepos = repos.filter(r => !['harvey.github.io'].includes(r.name) && r.language);
+
+  let overallPopularity = 0;
+  const langPopularity = {};
+  
+  filteredRepos.forEach(repo => {
+    const pop = repo.stargazers_count + repo.forks_count;
+    overallPopularity += pop;
+    if (repo.language) {
+      langPopularity[repo.language] = (langPopularity[repo.language] || 0) + pop;
+    }
+  });
+  
+  // Build an object array for each language with its overall popularity and percentage.
+  const languagePercentages = Object.keys(langPopularity).map(lang => {
+    const percentage = overallPopularity > 0 ? ((langPopularity[lang] / overallPopularity) * 100).toFixed(1) : "0.0";
+    return { 
+      language: lang, 
+      popularity: langPopularity[lang], 
+      overallPopularity: overallPopularity, 
+      percentage: percentage 
+    };
+  });
+  
+  // Sort languages by descending popularity, or alphabetically if equal.
+  languagePercentages.sort((a, b) => {
+    const diff = b.popularity - a.popularity;
+    return diff !== 0 ? diff : a.language.localeCompare(b.language);
+  });
+  
+  return languagePercentages;
+}
+
+// Testing function: It calls both functions and logs the output to the console.
+async function testOverallPercentages(username) {
+  const projectPercents = await fetchProjectPercentages(username);
+  //console.log("OVERALL Project Percentages:", projectPercents);
+
+
+  const languagePercents = await fetchLanguagePopularityPercentages(username);
+  //console.log("OVERALL Language Percentages:", languagePercents);
+}
+
+// Replace 'harvey' with your GitHub username if needed.
+//testOverallPercentages('harvey');
+
+let repos = null;
+
+async function getRepos(username) {
+    if(repos) {
+        return repos;
+    }
+    else{
+        const response = await fetch(`https://api.github.com/users/${username}/repos`);
+        repos = await response.json();
+        return repos;
+    }
+}
+
+
+async function fetchLanguageBreakdownForEachProject(username) {
+  // Fetch all repositories for the specified user.
+  if(!repos) {
+    const reposResponse = await fetch(`https://api.github.com/users/${username}/repos`);
+    repos = await reposResponse.json();
+  }
+    
+  // Exclude unwanted repos (for instance, 'harvey.github.io')
+  const filteredRepos = repos.filter(repo => !['harvey.github.io'].includes(repo.name));
+  
+  // For each repository, fetch its language breakdown.
+  const breakdownPromises = filteredRepos.map(async repo => {
+    // GitHub returns an object with language keys and bytes of code in that language.
+    const languagesResponse = await fetch(`https://api.github.com/repos/${username}/${repo.name}/languages`);
+    const languagesData = await languagesResponse.json();
+    
+    // Sum the bytes across all languages in this repo.
+    const totalBytes = Object.values(languagesData).reduce((sum, bytes) => sum + bytes, 0);
+    
+    return {
+      repoName: repo.name,
+      languagesData: languagesData, // e.g. { JavaScript: 12345, HTML: 6789, ... }
+      totalBytes: totalBytes
+    };
+  });
+  
+  // Wait for all repositories to be processed.
+  const breakdownResults = await Promise.all(breakdownPromises);
+  return breakdownResults;
+}
+
+// Global variable to cache the breakdown results.
+window.cachedOverallLanguageBreakdownResults = window.cachedOverallLanguageBreakdownResults || null;
+
+/**
+ * Updates the About section with the overall language breakdown.
+ * Caches the computed breakdown results globally so that subsequent clicks only rebuild
+ * the table. Also, since there may be multiple language containers in the DOM (one per message),
+ * we update only the last one.
+ * After updating the content, we scroll the chat container to the bottom.
+ */
+async function updateOverallLanguageBreakdown(username) {
+  // Instead of getElementById, select all elements with id "languagesContent"
+  // and pick the last one.
+  const containers = document.querySelectorAll('#languagesContent');
+  if (!containers || containers.length === 0) {
+    console.error("Container with id 'languagesContent' not found.");
+    return;
+  }
+  const container = containers[containers.length - 1];
+
+  // Helper function to scroll the chat container to the bottom.
+  function scrollToBottom() {
+    const chatContainer = document.getElementById('chatContainer');
+    if (chatContainer) {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+  }
+
+  // If cached breakdown exists, rebuild the table and update the container.
+  if (window.cachedOverallLanguageBreakdownResults) {
+    const tableHtml = buildLanguageBreakdownTable(window.cachedOverallLanguageBreakdownResults);
+    container.innerHTML = tableHtml;
+    scrollToBottom();
+    return;
+  }
+
+  try {
+    // Fetch all repositories for the user.
+    const reposResponse = await fetch(`https://api.github.com/users/${username}/repos`);
+    const repos = await reposResponse.json();
+    
+    // Filter out unwanted repositories.
+    const filteredRepos = repos.filter(repo => repo.name !== 'harvey.github.io');
+    
+    // Aggregate overall language bytes.
+    const overallLanguageBytes = {};
+    let overallTotalBytes = 0;
+    
+    // For each repository, fetch its language data.
+    await Promise.all(filteredRepos.map(async repo => {
+      const languagesResponse = await fetch(`https://api.github.com/repos/${username}/${repo.name}/languages`);
+      const languagesData = await languagesResponse.json();
+      Object.keys(languagesData).forEach(lang => {
+        overallLanguageBytes[lang] = (overallLanguageBytes[lang] || 0) + languagesData[lang];
+        overallTotalBytes += languagesData[lang];
+      });
+    }));
+    
+    // Build an array with the breakdown details.
+    const breakdownArray = Object.keys(overallLanguageBytes).map(lang => {
+      const bytes = overallLanguageBytes[lang];
+      const percentage = overallTotalBytes > 0 ? ((bytes / overallTotalBytes) * 100).toFixed(1) : "0.0";
+      return { language: lang, percentage, bytes };
+    });
+    // Sort languages from highest to lowest.
+    breakdownArray.sort((a, b) => b.bytes - a.bytes);
+    
+    // Cache the breakdown results globally.
+    window.cachedOverallLanguageBreakdownResults = breakdownArray;
+    
+    // Build and insert the HTML table.
+    const tableHtml = buildLanguageBreakdownTable(breakdownArray);
+    container.innerHTML = tableHtml;
+    // Scroll to bottom after updating.
+    scrollToBottom();
+  } catch (error) {
+    console.error("Error updating overall language breakdown:", error);
+  }
+}
+
+/**
+ * Helper function to build the language breakdown HTML table from the breakdown array.
+ */
+function buildLanguageBreakdownTable(breakdownArray) {
+  // Defined language colors.
+  const languageColors = {
+    "JavaScript": "#f1e05a",
+    "Python": "#3572A5",
+    "CSS": "#563d7c",
+    "HTML": "#e34c26",
+    "Batchfile": "#C1F12E",
+    "Shell": "#89e051"
+  };
+
+  // Scale factor determines how many "I" characters are used.
+  const scaleFactor = 5;
+  let tableHtml = '<table style="width: 50%; margin: auto; border-collapse: collapse;">';
+  tableHtml += '<thead><tr>';
+  tableHtml += '<th style="padding: 8px; text-align: left; border-bottom: 2px solid #ddd;">Language</th>';
+  tableHtml += '<th style="padding: 8px; text-align: right; border-bottom: 2px solid #ddd;">Breakdown</th>';
+  tableHtml += '</tr></thead>';
+  tableHtml += '<tbody>';
+  
+  breakdownArray.forEach(item => {
+    const color = languageColors[item.language] || '#ccc';
+    // Calculate the number of "I" characters based on the scaled percentage.
+    const barCount = Math.max(1, Math.round(parseFloat(item.percentage) / scaleFactor));
+    const bar = "I".repeat(barCount);
+    
+    tableHtml += `<tr>
+      <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.language}</td>
+      <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right; white-space: nowrap;">
+        <span style="color: ${color}; font-weight: bold; white-space: pre; display: inline-block;">${bar}</span>
+        <span style="display: inline-block; margin-left: 10px; width: 3em; text-align: right;">${item.percentage}%</span>
+      </td>
+    </tr>`;
+  });
+  
+  tableHtml += '</tbody></table>';
+  return tableHtml;
+}
+
 
     </script>
 </body>
