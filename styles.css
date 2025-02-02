@@ -1,0 +1,546 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    /* font-family: 'Cascadia Code', sans-serif; */
+    font-family: 'Source Serif 4', serif;
+    background-color: #0a0a0a;
+    color: #e0e0e0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
+}
+
+/* Chat container */
+.chat-container {
+    max-width: 1200px;
+    margin: 60px auto 80px;
+    padding: 20px;
+    width: 100%;
+    height: calc(100vh - 140px);
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+/* Message bubbles */
+.message {
+    margin-bottom: 20px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: messageAppear 0.3s ease-out forwards;
+    padding-left: 55px; /* avatar width + margin */
+    position: relative;
+    min-height: 40px; /* avatar height */
+}
+
+.message::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 40px; /* matches avatar width */
+    height: 40px; /* matches avatar height */
+    margin-right: 15px; /* matches avatar margin */
+}
+
+/* For messages that actually have avatars */
+.message-header .avatar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+}
+
+.bot-message {
+    background: #1a1a1a;
+    padding: 15px;
+    border-radius: 15px;
+    max-width: 80%;
+    width: fit-content;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    margin-top: 10px;
+    margin-left: 0; /* remove any existing margin */
+}
+
+/* Typing indicator */
+.typing {
+    display: none; /* will be changed to block when in use */
+    padding: 15px;
+    margin: 0;
+    position: fixed;
+    bottom: 80px; /* adjust this value if your quick replies height changes */
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 100; /* ensure it stays above other elements */
+}
+
+.typing span {
+    height: 10px;
+    width: 10px;
+    background: #333;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+    animation: typing 0.75s infinite ease-in-out;
+}
+
+/* Stagger animation delays for a livelier look */
+.typing span:nth-child(1) {
+    animation-delay: 0s;
+}
+.typing span:nth-child(2) {
+    animation-delay: 0.13s;
+}
+.typing span:nth-child(3) {
+    animation-delay: 0.22s;
+}
+
+@keyframes typing {
+    0%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+}
+
+/* Navigation styled as quick replies */
+.quick-replies {
+    position: fixed;
+    top: 1%;
+    border-radius: 15px;
+    left: 0;
+    right: 0;
+    background: #111;
+    padding: 15px;
+    display: flex;
+    gap: 10px;
+    border-top: 1px solid #222;
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.quick-reply {
+    background: #333;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.quick-reply:hover {
+    background: #444;
+}
+
+/* Animations */
+@keyframes messageAppear {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Projects grid adjustments for chat */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns by default */
+    gap: 20px;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .projects-grid {
+        grid-template-columns: 1fr; /* Single column on mobile */
+        max-width: 100%;
+    }
+    
+    /* Optional: Reduce gap for mobile */
+    .projects-grid {
+        gap: 15px;
+    }
+}
+
+.projects-grid img {
+    width: 100%;
+    border-radius: 0px;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .chat-container {
+        margin: 20px auto 60px; /* Reduced bottom margin from 100px to 60px */
+        padding: 10px;
+    }
+
+    .bot-message {
+        max-width: 90%;
+    }
+
+    /* Quick replies remain fixed near the bottom */
+    .quick-replies {
+        top: auto;
+        bottom: 1%;
+        flex-wrap: wrap;
+    }
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.message-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.markdown-content {
+    background-color: #1a1a1a;
+    padding: 15px;
+    border-radius: 8px;
+    /* font-family: 'Courier New', monospace; */
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.9em;
+    line-height: 1.6;
+    overflow-x: auto;
+}
+
+.markdown-content h1, .markdown-content h2, .markdown-content h3 {
+    color: #e0e0e0;
+    margin: 1em 0;
+}
+
+.markdown-content a {
+    color: #58a6ff;
+    text-decoration: none;
+}
+
+.markdown-content a:hover {
+    text-decoration: underline;
+}
+
+.markdown-content code {
+    background-color: #2d2d2d;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.markdown-content pre {
+    background-color: #2d2d2d;
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1em 0;
+}
+
+.markdown-content pre code {
+    background: none;
+    padding: 0;
+}
+
+.markdown-content ul, .markdown-content ol {
+    margin: 1em 0;
+    padding-left: 2em;
+}
+
+.markdown-content blockquote {
+    border-left: 4px solid #444;
+    margin: 1em 0;
+    padding-left: 1em;
+    color: #888;
+}
+
+.repo-link a {
+    color: #58a6ff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.repo-link a:hover {
+    text-decoration: underline;
+}
+
+a {
+    color: rgb(223, 223, 223);text-decoration: underline;
+}
+
+.markdown-content img {
+    max-width: 100%;
+    max-height: 30vh; /* Ensures images do not exceed 50% of the viewport height */
+    height: auto;
+    display: block;
+    margin: 15px auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    background-color: #2d2d2d;
+    padding: 5px;
+    object-fit: contain;
+}
+
+/* Add this to your CSS */
+.project-item, .project-item img {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.project-item:hover {
+    transform: translateY(-3px);
+}
+
+/* Custom scrollbar styling */
+.chat-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+    background: #2d2d2d;
+    border-radius: 4px;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+    background: #666;
+    border-radius: 4px;
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+/* Firefox support */
+.chat-container {
+    scrollbar-width: thin;
+    scrollbar-color: #666 #2d2d2d;
+}
+
+/* Optional: Style body scrollbar too */
+body::-webkit-scrollbar {
+    width: 10px;
+}
+
+body::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+body::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 5px;
+}
+
+body {
+    scrollbar-width: thin;
+    scrollbar-color: #444 #1a1a1a;
+}
+
+/* Delete button inside each chat message */
+.delete-chat {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #aaa;
+    user-select: none; /* prevents accidental selection */
+    z-index: 10;
+}
+
+.delete-chat:hover {
+    color: #fff;
+}
+
+@keyframes messageDisappear {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+.message.fade-out {
+    animation: messageDisappear 0.3s ease-out forwards;
+}
+
+/* Desktop adjustments */
+@media (min-width: 769px) {
+    .chat-container {
+        max-width: 1200px; /* Increase maximum width for desktop */
+        margin: 80px auto 80px; /* Slightly larger top margin and bottom margin */
+        padding: 30px; /* Increase overall padding */
+        height: calc(100vh - 80px); /* Adjust height to give more room */
+    }
+}
+
+@media (max-width: 768px) {
+    .project-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #1a1a1a;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 6px; /* Reduced gap between items */
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border: 1px solid #444; /* Adds a subtle outline */
+    }
+    .project-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+    }
+    .project-info {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        width: 100%;
+        color: #e0e0e0;
+    }
+    .project-name {
+        font-size: 1em;
+        font-weight: bold;
+        border-bottom: 1px solid #444; /* Underline for the title */
+        padding-bottom: 4px;
+        margin-bottom: 4px;
+    }
+    .project-stats {
+        font-size: 0.8em;
+        color: #ccc;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .text-info {
+        font-size: 0.75em;
+        color: #ccc;  /* Light grey text for stars and forks */
+        margin-right: 4px;
+        display: inline-block;
+    }
+    .badge-language {
+        background-color: #444; /* Fallback background color (will be overridden inline if available) */
+        border-radius: 5px;
+        padding: 2px 4px;
+        font-size: 0.75em;
+        color: #222; /* Darker text for contrast against bright backgrounds */
+        margin-right: 4px;
+        display: inline-block;
+    }
+}
+
+.text-info {
+    font-size: 0.75em;
+    color: #ccc; /* Light grey text for stars and forks */
+    margin-right: 4px;
+    display: inline-block;
+}
+
+.badge-language {
+    background-color: #444; /* Fallback background color */
+    border-radius: 5px;       /* Gives the span rounded corners */
+    padding: 2px 4px;
+    font-size: 0.75em;
+    color: #222;              /* Dark text for better contrast, even against bright backgrounds */
+    margin-right: 4px;
+    display: inline-block;
+}
+
+/* Styles for project items, applicable on all devices */
+.project-item {
+    display: flex;
+    align-items: stretch; /* Ensure the child fills the container's height */
+    background: #1a1a1a;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #444;
+}
+.project-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+}
+
+/* Main project info layout as a flex column */
+.project-info {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Make it fill the container's height */
+    color: #e0e0e0;
+}
+
+/* Project title styling */
+.project-name {
+    font-size: 1em;
+    font-weight: bold;
+}
+
+/* Divider line for visual separation between title and description */
+.project-divider {
+    height: 1px;
+    background-color: #444;
+    margin: 4px 0;
+}
+
+/* Project description styling */
+.project-description {
+    font-size: 0.85em;
+    color: #ccc;
+    line-height: 1.2;
+}
+
+/* Stats container (stars, forks, language) acting as a footer */
+.project-stats {
+    margin-top: auto; /* Push this container to the bottom of .project-info */
+    font-size: 0.8em;
+    color: #ccc;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Plain text style for stars and forks */
+.text-info {
+    font-size: 0.75em;
+    color: #ccc;
+    margin-right: 4px;
+    display: inline-block;
+}
+
+/* Badge styling for language info */
+.badge-language {
+    background-color: #444; /* Fallback background (inline style overrides if provided) */
+    border-radius: 5px;
+    padding: 2px 4px;
+    font-size: 0.75em;
+    color: #222;
+    margin-right: 4px;
+    display: inline-block;
+}
+
+/* Further increased font sizes on desktop */
+@media (min-width: 769px) {
+    .project-name {
+        font-size: 1.2em;
+    }
+    .project-description {
+        font-size: 1em;
+    }
+    .project-stats {
+        font-size: 0.9em;
+    }
+    .text-info {
+        font-size: 0.85em;
+    }
+    .badge-language {
+        font-size: 0.85em;
+    }
+}
