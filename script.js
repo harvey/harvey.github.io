@@ -513,7 +513,7 @@ const baseScaleFactor = 5;
 // Adjust the effective scale factor for mobile devices.
 let effectiveScaleFactor = baseScaleFactor;
 if (window.innerWidth < 768) {
-effectiveScaleFactor = baseScaleFactor / 0.28; // making the bars 0.4x as big on mobile
+effectiveScaleFactor = baseScaleFactor / 0.8; // making the bars 0.4x as big on mobile
 }
 
 // The phrase to use continuously for the bars.
