@@ -439,7 +439,7 @@ const reposResponse = await fetch(`https://api.github.com/users/${username}/repo
 const repos = await reposResponse.json();
 
 // Filter out unwanted repositories.
-const filteredRepos = repos.filter(repo => repo.name !== 'harvey.github.io');
+const filteredRepos = repos.filter(repo => repo.name !== 'harvey.github');
 
 // Aggregate overall language bytes.
 const overallLanguageBytes = {};
