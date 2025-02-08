@@ -1,0 +1,245 @@
+/* Ensure the page fills the viewport and remove default margins */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  /* Prevent scrolling if the content fits in one viewport */
+  overflow: hidden;
+}
+
+/* Use a flexbox layout to distribute space between header, content, and footer */
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Source Serif 4', serif;
+  background: #0a0a0a;
+  color: #e0e0e0;
+  line-height: 1.6;
+}
+
+/* Header remains at the top */
+header {
+  flex: 0 0 auto;
+  background: #111;
+  color: #fff;
+  padding: 2rem;
+  text-align: center;
+  border-bottom: 1px solid #222;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+/* Remove extra vertical gaps by resetting container margin,
+   and allow it to take the remaining space */
+.container {
+  max-width: 1200px;
+  margin: 0 auto; /* changed from "60px auto" to remove the gap */
+  padding: 1rem;
+  flex: 1 1 auto;
+}
+
+.hero {
+  background: #1a1a1a;
+  border-radius: 8px;
+  padding: 2rem;
+  margin-top: -30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+  text-align: center;
+}
+
+.hero h2 {
+  margin-top: 0;
+  font-size: 2rem;
+  color: #e0e0e0;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: #cfcfcf;
+}
+
+/* Ensure our embedded iframe occupies full width without borders */
+iframe {
+  width: 100%;
+  border: none;
+  display: block;
+}
+
+/* Updated download button styling */
+.download-btn {
+  display: inline-block;
+  margin-top: 1.5rem;
+  text-decoration: none;
+  background: #4285F4;
+  color: #fff;
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.download-btn:hover {
+  background: #3367D6;
+  transform: translateY(-2px);
+}
+
+.download-btn:active {
+  background: #3367D6;
+  transform: translateY(0);
+}
+
+section.features {
+  background: #1a1a1a;
+  margin: 2rem 0;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+}
+
+.features h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #222;
+  padding-bottom: 1rem;
+}
+
+.feature-item:last-child {
+  margin-bottom: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.feature-item img {
+  width: 50px;
+  height: 50px;
+  margin-right: 1rem;
+}
+
+.feature-item h3 {
+  margin: 0 0 0.5rem 0;
+}
+
+.feature-item p {
+  margin: 0;
+  color: #cfcfcf;
+}
+
+/* Footer stays at the bottom, always visible without scrolling */
+footer {
+  flex: 0 0 auto;
+  text-align: center;
+  padding: 1rem;
+  background: #111;
+  color: #888;
+  border-top: 1px solid #222;
+}
+
+a {
+  color: #58a6ff;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+a:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #58a6ff;
+}
+
+.iframe-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.iframe-container iframe {
+  width: 100%;
+  border: none;
+}
+
+.live-demo {
+  margin: auto;
+  max-width: 600px;
+  text-align: center;
+  padding: 1rem;
+  background: #1a1a1a; /* Adjust background/color as desired */
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+}
+
+/* Features container set as flex split into two columns */
+.features-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* Left column for feature items */
+.features-list {
+  flex: 1 1 50%;
+  padding-right: 1rem;
+}
+
+/* Right column for Live Demo box */
+.live-demo {
+  flex: 1 1 40%;
+  margin-left: 1rem;
+  text-align: center;
+  padding: 1rem;
+  background: #1a1a1a; /* Adjust background as needed */
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+}
+
+/* Ensure the iframe is centered within its container */
+.iframe-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.iframe-container iframe {
+  width: 100%;
+  border: none;
+}
+
+/* Mobile styles: allow scrolling and stack features in one column */
+@media (max-width: 768px) {
+  /* Allow scrolling on mobile */
+  html, body {
+    overflow-y: auto;
+  }
+  
+  /* Stack the features container into a single column */
+  .features-container {
+    flex-direction: column;
+  }
+
+  /* Remove side margins for mobile inside the features container */
+  .features-list {
+    padding-right: 0;
+    margin-bottom: 2rem;
+  }
+  
+  .live-demo {
+    margin-left: 0;
+    /* Add some spacing from the features list */
+    margin-top: 2rem;
+  }
+}

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panopto Custom Speed</title>
+  <link rel="stylesheet" href="assets/panopto/styles.css">
+  <!-- Include the Source Serif 4 font to match index.html -->
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <img src="assets/panopto/icon.png" width="100px" height="100px">
+    <div>
+        <h1>Panopto Custom Speed</h1>
+        <img src="https://img.shields.io/chrome-web-store/users/fnoppdfnaklabgfllejlefomclegmnam" alt="Users">
+        <img src="https://img.shields.io/chrome-web-store/stars/fnoppdfnaklabgfllejlefomclegmnam" alt="Rating">
+        <br>Speed up or slow down your Panopto videos easily.<br>
+        <a href="https://chromewebstore.google.com/detail/panopto-custom-speed/fnoppdfnaklabgfllejlefomclegmnam" class="download-btn" target="_blank">
+            Add to Chrome
+        </a>
+        
+    </div>
+  </header>
+  <div class="container">
+    <!-- Features Section restructured into a two-column layout -->
+      <h2>Features</h2>
+      <div class="features-container">
+        <div class="features-list">
+          <div class="feature-item">
+            <img src="assets/panopto/icon.png" alt="Easy Setup">
+            <div>
+              <h3>Easy Setup</h3>
+              <p>Install and activate the extension with just a click.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <img src="assets/panopto/speed.png" alt="Custom Speed Options">
+            <div>
+              <h3>Custom Speed Options</h3>
+              <p>Select from a wide range of playback speeds to suit your needs.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <img src="assets/panopto/settings.png" alt="User-Friendly Interface">
+            <div>
+              <h3>User-Friendly Interface</h3>
+              <p>An intuitive design that puts options at your fingertips.</p>
+            </div>
+          </div>
+        </div>
+        <div class="live-demo">
+          <h2>Live Demo</h2>
+          <div class="iframe-container">
+            <iframe id="extensionFrame" src="assets/panopto/extension/popup.html"></iframe>
+          </div>
+        </div>
+      </div>
+  </div>
+  <footer>
+    <p><img src="https://img.icons8.com/ios11/512/FFFFFF/github.png" style="height: 23px; width: 23px; vertical-align: middle;">
+         GitHub: <a href="https://github.com/harvey/Panopto-Extension">Panopto-Extension</a></p>
+  </footer>
+  <script>
+    // Dynamically adjust the iframe's height based on its content.
+    function resizeIframe() {
+      const iframe = document.getElementById('extensionFrame');
+      try {
+        // Access the document inside the iframe.
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        if (doc) {
+          // Adjust the iframe's height to match the scrollHeight of its content.
+          iframe.style.height = doc.documentElement.scrollHeight + 'px';
+        }
+      } catch (e) {
+        console.error("Could not resize iframe:", e);
+      }
+    }
+
+    // Run once on window load and repeatedly thereafter.
+    window.addEventListener('load', function() {
+      resizeIframe();
+      setInterval(resizeIframe, 250);
+    });
+  </script>
+</body>
+</html>
