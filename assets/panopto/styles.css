@@ -3,8 +3,8 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  /* Prevent scrolling if the content fits in one viewport */
-  overflow: hidden;
+  /* Allow vertical scrolling if content overflows */
+  overflow-y: auto;
 }
 
 /* Use a flexbox layout to distribute space between header, content, and footer */
@@ -33,12 +33,13 @@ header h1 {
   font-size: 2.5rem;
 }
 
-/* Remove extra vertical gaps by resetting container margin,
-   and allow it to take the remaining space */
+/* Container takes the remaining space; add bottom padding
+   so that content does not get hidden behind the fixed footer */
 .container {
   max-width: 1200px;
   margin: 0 auto; /* changed from "60px auto" to remove the gap */
   padding: 1rem;
+  padding-bottom: 80px; /* extra padding to avoid overlap with the footer */
   flex: 1 1 auto;
 }
 
@@ -138,14 +139,20 @@ section.features {
   color: #cfcfcf;
 }
 
-/* Footer stays at the bottom, always visible without scrolling */
+/* Fixed Footer: always visible at the bottom of the viewport */
 footer {
-  flex: 0 0 auto;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px; /* set the desired footer height */
+  line-height: 60px;
   text-align: center;
-  padding: 1rem;
+  padding: 0 1rem;
   background: #111;
   color: #888;
   border-top: 1px solid #222;
+  z-index: 1000;
 }
 
 a {
@@ -242,4 +249,79 @@ a:focus {
     /* Add some spacing from the features list */
     margin-top: 2rem;
   }
+}
+
+/* Reviews Carousel Styles */
+.reviews-carousel {
+  margin-top: 2rem;
+  padding: 2rem;
+  background: #1a1a1a;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+}
+.reviews-carousel h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  color: #e0e0e0;
+}
+.carousel {
+  position: relative;
+  overflow: hidden;
+}
+.carousel-track-container {
+  overflow: hidden;
+}
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.review-item {
+  /* Force each review slide to take exactly 100% of the container's width */
+  flex: 0 0 100%;
+  box-sizing: border-box;
+  padding: 1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.review-item p {
+  font-size: 1.2rem;
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+.review-item span {
+  font-size: 1rem;
+  color: #888;
+}
+.star-rating {
+  display: inline-block;
+  color: #FFD700; /* Golden color for filled stars */
+  margin-bottom: 0.5rem;
+}
+.star-rating span {
+  font-size: 1.5rem;
+  margin-right: 0.1rem;
+}
+.carousel-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: #e0e0e0;
+  font-size: 2rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  z-index: 10;
+}
+.carousel-button.left {
+  left: 10px;
+}
+.carousel-button.right {
+  right: 10px;
 }

@@ -19,47 +19,104 @@
         <a href="https://chromewebstore.google.com/detail/panopto-custom-speed/fnoppdfnaklabgfllejlefomclegmnam" class="download-btn" target="_blank">
             Add to Chrome
         </a>
-        
     </div>
   </header>
   <div class="container">
     <!-- Features Section restructured into a two-column layout -->
-      <h2>Features</h2>
-      <div class="features-container">
-        <div class="features-list">
-          <div class="feature-item">
-            <img src="assets/panopto/icon.png" alt="Easy Setup">
-            <div>
-              <h3>Easy Setup</h3>
-              <p>Install and activate the extension with just a click.</p>
-            </div>
-          </div>
-          <div class="feature-item">
-            <img src="assets/panopto/speed.png" alt="Custom Speed Options">
-            <div>
-              <h3>Custom Speed Options</h3>
-              <p>Select which speed you want to use, and whether you want the speed to be saved for the next video you watch.</p>
-            </div>
-          </div>
-          <div class="feature-item">
-            <img src="assets/panopto/settings.png" alt="User-Friendly Interface">
-            <div>
-              <h3>User-Friendly Interface</h3>
-              <p>A simple slider to change the speeds, but also allowing you to enter a specific speed if you want.</p>
-            </div>
+    <h2>Features</h2>
+    <div class="features-container">
+      <div class="features-list">
+        <div class="feature-item">
+          <img src="assets/panopto/icon.png" alt="Easy Setup">
+          <div>
+            <h3>Easy Setup</h3>
+            <p>Install and activate the extension with just a click.</p>
           </div>
         </div>
-        <div class="live-demo" style="max-width: 325px;">
-          <h2>Live Demo</h2>
-          <div class="iframe-container">
-            <iframe id="extensionFrame" src="assets/panopto/extension/popup.html"></iframe>
+        <div class="feature-item">
+          <img src="assets/panopto/speed.png" alt="Custom Speed Options">
+          <div>
+            <h3>Custom Speed Options</h3>
+            <p>Select which speed you want to use, and whether you want the speed to be saved for the next video you watch.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <img src="assets/panopto/settings.png" alt="User-Friendly Interface">
+          <div>
+            <h3>User-Friendly Interface</h3>
+            <p>A simple slider to change the speeds, but also allowing you to enter a specific speed if you want.</p>
           </div>
         </div>
       </div>
+      <div class="live-demo" style="max-width: 325px;">
+        <h2>Live Demo</h2>
+        <div class="iframe-container">
+          <iframe id="extensionFrame" src="assets/panopto/extension/popup.html"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <h2>Watch The Demo</h2>
+    <!-- Replace VIDEO_ID with the actual YouTube video ID -->
+    <iframe src="https://www.youtube.com/embed/DJ8a1dYxs5I" 
+            title="YouTube video"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen
+            style="width: 100%; height: 60%;"></iframe>
+    <br><br><br>
+
+    <!-- Reviews Carousel Section -->
+    <section class="reviews-carousel">
+      <h2>User Reviews</h2>
+      <div class="carousel">
+        <div class="carousel-track-container">
+          <ul class="carousel-track">
+            <li class="review-item">
+              <p>"Great extension! It makes watching Panopto videos so much easier."</p>
+              <div class="star-rating">
+                <span>&#9733;</span>
+                <span>&#9733;</span>
+                <span>&#9733;</span>
+                <span>&#9733;</span>
+                <span>&#9733;</span>
+              </div><br>
+              <span>- S.H</span>
+            </li>
+            <li class="review-item">
+              <p>No review was provided.</p>
+              <div class="star-rating">
+                <span>&#9733;</span>
+                <span>&#9733;</span>
+                <span>&#9733;</span>
+                <span>&#9733;</span>
+                <span>&#9733;</span>
+              </div>
+              <span>- M.N</span>
+            </li>
+            <!-- <span>&#9734;</span> -->
+            <!-- <li class="review-item">
+              <p>"Simple, effective, and user friendly."</p>
+              <div class="star-rating">
+                <span>&#9733;</span>
+                <span>&#9733;</span>
+                <span>&#9733;</span>
+                <span>&#9733;</span>
+                <span>&#9734;</span>
+              </div>
+              <span>- User C</span>
+            </li> -->
+          </ul>
+        </div>
+        <!-- Navigation buttons for the carousel -->
+        <button class="carousel-button left">‹</button>
+        <button class="carousel-button right">›</button>
+      </div>
+    </section>
+    <br><br><br>
   </div>
   <footer>
-    <p><img src="https://img.icons8.com/ios11/512/FFFFFF/github.png" style="height: 23px; width: 23px; vertical-align: middle;">
-         GitHub: <a href="https://github.com/harvey/Panopto-Extension">Panopto-Extension</a></p>
+    <img src="https://img.icons8.com/ios11/512/FFFFFF/github.png" style="height: 23px; width: 23px; vertical-align: middle;">
+    GitHub: <a href="https://github.com/harvey/Panopto-Extension">Panopto-Extension</a>
   </footer>
   <script>
     // Dynamically adjust the iframe's height based on its content.
@@ -77,11 +134,61 @@
       }
     }
 
-    // Run once on window load and repeatedly thereafter.
+    // Run resize once on window load and repeatedly thereafter.
     window.addEventListener('load', function() {
       resizeIframe();
       setInterval(resizeIframe, 250);
     });
   </script>
+  
+  <!-- Carousel JavaScript for Reviews -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const track = document.querySelector('.carousel-track');
+      const slides = Array.from(track.children);
+      const nextButton = document.querySelector('.carousel-button.right');
+      const prevButton = document.querySelector('.carousel-button.left');
+      let currentSlideIndex = 0;
+      
+      // Set the width for each slide and position them side-by-side.
+      const slideWidth = slides[0].getBoundingClientRect().width;
+      slides.forEach((slide, index) => {
+        slide.style.left = slideWidth * index + 'px';
+      });
+
+      function moveToSlide(index) {
+        track.style.transform = 'translateX(-' + slides[index].style.left + ')';
+        currentSlideIndex = index;
+      }
+      
+      // Next Button Logic
+      nextButton.addEventListener('click', function() {
+        let nextIndex = currentSlideIndex + 1;
+        if (nextIndex >= slides.length) {
+          nextIndex = 0;
+        }
+        moveToSlide(nextIndex);
+      });
+      
+      // Prev Button Logic
+      prevButton.addEventListener('click', function() {
+        let prevIndex = currentSlideIndex - 1;
+        if (prevIndex < 0) {
+          prevIndex = slides.length - 1;
+        }
+        moveToSlide(prevIndex);
+      });
+      
+      // Auto slide every 5 seconds.
+      setInterval(() => {
+        let nextIndex = currentSlideIndex + 1;
+        if (nextIndex >= slides.length) {
+          nextIndex = 0;
+        }
+        moveToSlide(nextIndex);
+      }, 8000);
+    });
+  </script>
 </body>
+
 </html>
