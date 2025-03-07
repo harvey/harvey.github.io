@@ -366,10 +366,14 @@ a:focus {
   .reviews-carousel {
     margin-top: 2rem;
     padding: 2rem;
-    max-width: 90%;
+    max-width: 70%;
     background: #1a1a1a;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+  }
+
+  body {
+    overflow-x: hidden;
   }
 }
 
