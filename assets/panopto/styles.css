@@ -362,6 +362,15 @@ a:focus {
   .video-container {
       padding-bottom: 65%; /* Adjust ratio as needed */
   }
+
+  .reviews-carousel {
+    margin-top: 2rem;
+    padding: 2rem;
+    max-width: 90%;
+    background: #1a1a1a;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+  }
 }
 
 /* Responsive Graph Container */
