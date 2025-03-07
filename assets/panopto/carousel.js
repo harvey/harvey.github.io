@@ -16,6 +16,26 @@ document.addEventListener('DOMContentLoaded', function() {
       currentSlideIndex = index;
     }
     
+    // Auto slide timer functions
+    let autoSlideTimer;
+    function startAutoSlide() {
+      autoSlideTimer = setInterval(() => {
+        let nextIndex = currentSlideIndex + 1;
+        if (nextIndex >= slides.length) {
+          nextIndex = 0;
+        }
+        moveToSlide(nextIndex);
+      }, 10000);
+    }
+    
+    function resetAutoSlide() {
+      clearInterval(autoSlideTimer);
+      startAutoSlide();
+    }
+    
+    // Start auto slide on load
+    startAutoSlide();
+    
     // Next Button Logic
     nextButton.addEventListener('click', function() {
       let nextIndex = currentSlideIndex + 1;
@@ -23,6 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
         nextIndex = 0;
       }
       moveToSlide(nextIndex);
+      resetAutoSlide();  // Reset the timer on manual interaction
     });
     
     // Prev Button Logic
@@ -32,14 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
         prevIndex = slides.length - 1;
       }
       moveToSlide(prevIndex);
+      resetAutoSlide();  // Reset the timer on manual interaction
     });
     
-    // Auto slide every 5 seconds.
-    setInterval(() => {
-      let nextIndex = currentSlideIndex + 1;
-      if (nextIndex >= slides.length) {
-        nextIndex = 0;
-      }
-      moveToSlide(nextIndex);
-    }, 8000);
-  });
+});

@@ -245,9 +245,13 @@ a:focus {
   }
   
   .live-demo {
-    margin-left: 0;
-    /* Add some spacing from the features list */
-    margin-top: 2rem;
+    max-width: 100% !important;
+    /* margin: 0 auto; */
+    /* padding: 1rem; */
+  }
+
+  .live-demo iframe {
+    width: 100%;
   }
 }
 
@@ -324,4 +328,54 @@ a:focus {
 }
 .carousel-button.right {
   right: 10px;
+}
+
+/* Responsive YouTube video container */
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+}
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Optional: Tweak for very small mobile devices */
+@media screen and (max-width: 600px) {
+  .video-container {
+      padding-bottom: 65%; /* Adjust ratio as needed */
+  }
+}
+
+/* Responsive Graph Container */
+.graph-container {
+  position: relative;
+  padding-bottom: 61.83%; /* Aspect ratio based on 371/600 */
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+}
+.graph-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Optional: Further tweak for mobile devices */
+@media screen and (max-width: 600px) {
+  .graph-container {
+    display: none;
+  }
+  
+  .graph-container iframe {
+    display: none;
+  }
 }

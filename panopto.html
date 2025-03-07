@@ -54,6 +54,9 @@
           </div>
         </div>
       </div>
+      <div id="mobile-live-demo">
+
+      </div>
       <div class="live-demo" style="max-width: 325px;">
         <h2>Live Demo</h2>
         <div class="iframe-container">
@@ -64,17 +67,18 @@
 
     <h2>Watch The Demo</h2>
     <!-- Replace VIDEO_ID with the actual YouTube video ID -->
-    <iframe src="https://www.youtube.com/embed/DJ8a1dYxs5I" 
-            title="YouTube video"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen
-            style="width: 100%; height: 60%;"></iframe>
-    <br><br><br>
-
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/embed/DJ8a1dYxs5I" 
+              title="YouTube video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen></iframe>
+      <br><br><br>
+    </div>
+    <div class="graph-container">
     <h2>Top 50 time savers</h2>
-    <iframe width="600" height="371" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQY7BsTK4TY5DLMUDF7kbf-dq1Eo0cgv95FKkemrwyIlHwxUNhC4Kz1qBYDrTF5IZ_NYerftRcRlB6q/pubchart?oid=1898545472&amp;format=interactive"></iframe>
+    <iframe seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQY7BsTK4TY5DLMUDF7kbf-dq1Eo0cgv95FKkemrwyIlHwxUNhC4Kz1qBYDrTF5IZ_NYerftRcRlB6q/pubchart?oid=1898545472&amp;format=interactive"></iframe>
     <br><br><br>
-
+  </div>
     <!-- Reviews Carousel Section -->
     <section class="reviews-carousel">
       <h2>User Reviews</h2>
@@ -160,6 +164,19 @@
       resizeIframe();
       setInterval(resizeIframe, 250);
     });
+
+    function relocateLiveDemo() {
+      const fc = document.querySelector('.features-container');
+      if (window.innerWidth < 600) {
+        fc.classList.remove("features-container");
+      } else {
+        // For larger screens: move iframe back into the live-demo container if it's not there already.
+        fc.classList.add("features-container");
+      }
+    }
+
+    window.addEventListener('resize', relocateLiveDemo);
+    window.addEventListener('load', relocateLiveDemo);
   </script>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-9LY56JJEXM"></script>
