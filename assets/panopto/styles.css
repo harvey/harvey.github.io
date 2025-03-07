@@ -137,6 +137,17 @@ section.features {
 .feature-item p {
   margin: 0;
   color: #cfcfcf;
+  word-wrap: break-word;
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .feature-item p {
+    margin: 0;
+    color: #cfcfcf;
+    word-wrap: break-word;
+    max-width: 80%;
+  }
 }
 
 /* Fixed Footer: always visible at the bottom of the viewport */

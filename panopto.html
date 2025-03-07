@@ -74,11 +74,11 @@
               allowfullscreen></iframe>
       <br><br><br>
     </div>
-    <div class="graph-container">
+    <!-- <div class="graph-container">
     <h2>Top 50 time savers</h2>
     <iframe seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQY7BsTK4TY5DLMUDF7kbf-dq1Eo0cgv95FKkemrwyIlHwxUNhC4Kz1qBYDrTF5IZ_NYerftRcRlB6q/pubchart?oid=1898545472&amp;format=interactive"></iframe>
     <br><br><br>
-  </div>
+  </div> -->
     <!-- Reviews Carousel Section -->
     <section class="reviews-carousel">
       <h2>User Reviews</h2>
@@ -166,12 +166,16 @@
     });
 
     function relocateLiveDemo() {
-      const fc = document.querySelector('.features-container');
+      const fc = document.getElementsByClassName("features-container")[0];
       if (window.innerWidth < 600) {
-        fc.classList.remove("features-container");
+        try{
+          fc.classList.remove("features-container");
+        } catch (e) {}
       } else {
         // For larger screens: move iframe back into the live-demo container if it's not there already.
-        fc.classList.add("features-container");
+        try{
+          fc.className = "features-container";
+        } catch (e) {}
       }
     }
 
