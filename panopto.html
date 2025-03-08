@@ -185,11 +185,24 @@
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-9LY56JJEXM"></script>
   <script>
+
+    // get full url of the current page
+    let currentUrl = window.location.href;
+    // check if the url contains a ?
+    if(currentUrl.includes('?')){
+      // get the query string
+      let queryString = currentUrl.split('?')[1];      
+    }
+
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
+    
+    // set LOCATION to the params value
 
-    gtag('config', 'G-9LY56JJEXM');
+    gtag('config', 'G-9LY56JJEXM', {
+      'AL': params
+    });
   </script>
   
   <!-- Carousel JavaScript for Reviews -->
