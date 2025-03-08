@@ -199,10 +199,14 @@
     gtag('js', new Date());
     
     // set LOCATION to the params value
-
-    gtag('config', 'G-9LY56JJEXM', {
-      'AL': params
-    });
+    if(queryString) { 
+        gtag('config', 'G-9LY56JJEXM', {
+            'AL': queryString
+        });
+    }
+    else {
+        gtag('config', 'G-9LY56JJEXM');
+    }
   </script>
   
   <!-- Carousel JavaScript for Reviews -->
