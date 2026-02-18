@@ -71,6 +71,7 @@ npm run preview
 > Important: Do **not** publish the raw source branch directly. GitHub Pages cannot execute `.jsx` entry files (`/src/main.jsx`) and will show MIME errors/blank page.
 
 This repo includes `.github/workflows/deploy-pages.yml` which builds the app with Vite and deploys the generated `dist/` output to Pages.
+The workflow intentionally uses `npm install` (not `npm ci`) so deployment still works even if a lockfile has not been committed yet.
 
 ### Recommended setup (GitHub Actions)
 1. Push this repository to GitHub.
@@ -85,18 +86,6 @@ npm run build
 npm run deploy
 ```
 Then set Pages source to the `gh-pages` branch.
-This repo uses `gh-pages` with Vite base path configured in `vite.config.js`.
-
-### One-time setup
-1. Ensure repository name matches `harvey.github.io` (or update `repoName` in `vite.config.js`).
-2. Commit and push your changes.
-
-### Deploy command
-```bash
-npm run deploy
-```
-
-Then set GitHub Pages source to the `gh-pages` branch in repository settings.
 
 ## Performance Tips
 
