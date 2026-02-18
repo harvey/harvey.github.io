@@ -68,6 +68,23 @@ npm run preview
 
 ## GitHub Pages Deployment
 
+> Important: Do **not** publish the raw source branch directly. GitHub Pages cannot execute `.jsx` entry files (`/src/main.jsx`) and will show MIME errors/blank page.
+
+This repo includes `.github/workflows/deploy-pages.yml` which builds the app with Vite and deploys the generated `dist/` output to Pages.
+
+### Recommended setup (GitHub Actions)
+1. Push this repository to GitHub.
+2. In **Settings → Pages**, set **Source** to **GitHub Actions**.
+3. Push to `main` (or run the workflow manually).
+4. Wait for the **Deploy Vite site to GitHub Pages** workflow to finish.
+
+### Manual local deployment (optional)
+You can still deploy manually with:
+```bash
+npm run build
+npm run deploy
+```
+Then set Pages source to the `gh-pages` branch.
 This repo uses `gh-pages` with Vite base path configured in `vite.config.js`.
 
 ### One-time setup

@@ -1,9 +1,9 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-const repoName = 'harvey.github.io';
-
 export default defineConfig({
   plugins: [react()],
-  base: process.env.NODE_ENV === 'production' ? `/${repoName}/` : '/',
+  // Relative asset paths avoid broken JS/CSS references on GitHub Pages
+  // whether this repo is served as user site or project site.
+  base: './',
 });
