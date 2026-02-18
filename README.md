@@ -85,6 +85,18 @@ npm run build
 npm run deploy
 ```
 Then set Pages source to the `gh-pages` branch.
+This repo uses `gh-pages` with Vite base path configured in `vite.config.js`.
+
+### One-time setup
+1. Ensure repository name matches `harvey.github.io` (or update `repoName` in `vite.config.js`).
+2. Commit and push your changes.
+
+### Deploy command
+```bash
+npm run deploy
+```
+
+Then set GitHub Pages source to the `gh-pages` branch in repository settings.
 
 ## Performance Tips
 
